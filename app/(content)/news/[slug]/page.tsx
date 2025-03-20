@@ -1,7 +1,7 @@
-import { DUMMY_NEWS } from "@/dummy-news";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getNewsItem } from "@/lib/news";
 
 type NewsDetailPageProps = {
   params: { slug: string };
@@ -9,7 +9,7 @@ type NewsDetailPageProps = {
 
 export const generateMetadata = async ({ params }: NewsDetailPageProps) => {
   const { slug } = params;
-  const newsItem = DUMMY_NEWS.find((newsItem) => newsItem.slug === slug);
+  const newsItem = await getNewsItem(slug);
   if (!newsItem) {
     return notFound();
   }
@@ -26,9 +26,9 @@ export const generateMetadata = async ({ params }: NewsDetailPageProps) => {
   };
 };
 
-export default function NewsDetailPage({ params }: NewsDetailPageProps) {
+export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const { slug } = params;
-  const newsItem = DUMMY_NEWS.find((newsItem) => newsItem.slug === slug);
+  const newsItem = await getNewsItem(slug);
   if (!newsItem) {
     return notFound();
   }

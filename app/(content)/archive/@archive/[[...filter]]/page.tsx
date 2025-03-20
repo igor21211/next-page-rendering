@@ -18,14 +18,14 @@ export default async function ArchiveYearPage({ params }: Props) {
   const selectedMonth = filter ? parseInt(filter[1]) : undefined;
 
   let newsItems: NewsItem[] = [];
-  let links = getAvailableNewsYears();
+  let links: number[] = [];
   if (selectedYear && !selectedMonth) {
-    newsItems = getNewsForYear(selectedYear);
-    links = getAvailableNewsMonths(selectedYear);
+    newsItems = await getNewsForYear(selectedYear);
+    links = await getAvailableNewsMonths(selectedYear);
   }
 
   if (selectedYear && selectedMonth) {
-    newsItems = getNewsForYearAndMonth(selectedYear, selectedMonth);
+    newsItems = await getNewsForYearAndMonth(selectedYear, selectedMonth);
     links = [];
   }
 
@@ -35,9 +35,11 @@ export default async function ArchiveYearPage({ params }: Props) {
   }
 
   if (
-    (selectedYear && !getAvailableNewsYears().includes(selectedYear)) ||
+    (selectedYear && !(await getAvailableNewsYears()).includes(selectedYear)) ||
     (selectedMonth &&
-      !getAvailableNewsMonths(selectedYear as number).includes(selectedMonth))
+      !(await getAvailableNewsMonths(selectedYear as number)).includes(
+        selectedMonth
+      ))
   ) {
     throw new Error("Invalid filter");
   }
